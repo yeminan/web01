@@ -1,0 +1,154 @@
+package com.lmhshop.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.lmhshop.dto.MemberDTO;
+import com.lmhshop.service.MemberService;
+
+@Controller
+@RequestMapping("/member/")
+public class MemberController {
+	
+	//다음 서비스 작업 객체를 주입
+	@Autowired
+	MemberService memberService;
+	@Autowired
+	BCryptPasswordEncoder pwdEncoder;
+	@Autowired
+	HttpSession session;
+
+		//회원목록
+		@RequestMapping(value="memberList.do", method = RequestMethod.GET)
+	    public String memberList(Model model) throws Exception {
+			int cnt = memberService.memberCount();
+			List<MemberDTO> memberList = memberService.memberList();
+			model.addAttribute("cnt", cnt);
+			model.addAttribute("memberList", memberList);
+	        return "member/memberList";
+	    }
+	/* 일반회원 정보보기 */
+	@RequestMapping(value="read.do", method = RequestMethod.GET)
+	public String memberRead(Model model, HttpServletRequest request) throws Exception {
+		String id = (String) session.getAttribute("id");
+		MemberDTO member = memberService.viewMember(id);
+		model.addAttribute("member", member);
+		return "member/getMember";
+	}
+	@RequestMapping("joinForm.do") 
+	public String memberWriteForm(Model model) throws Exception {
+		return "member/joinForm";
+	}
+	
+
+	@RequestMapping("loginForm.do")  
+	public String memberLoginForm(Model model) throws Exception {
+		return "member/loginForm";
+	}
+	
+	@RequestMapping(value="join.do", method = RequestMethod.POST)
+	public String memberWrite(MemberDTO mdto, Model model) throws Exception {
+		String pwd=mdto.getPwd();
+		String pwd1 = pwdEncoder.encode(pwd);
+		mdto.setPwd(pwd1);
+		memberService.insertMember(mdto);
+		return "redirect:/";
+	}
+	
+
+	 @RequestMapping(value="updatePro.do", method = RequestMethod.POST)
+		public String updateMember(MemberDTO mdto,Model model) throws Exception {
+		 	model.addAttribute("mdto",mdto);
+	    	memberService.updateMember(mdto);
+			return "redirect:/";
+	}
+	
+
+	@RequestMapping(value="delete.do", method = RequestMethod.GET)
+	public String deleteMember(MemberDTO member) throws Exception {
+		MemberDTO dto = (MemberDTO) session.getAttribute("member");
+		memberService.deleteMember(dto);
+		session.setAttribute("member", null);
+		session.invalidate();
+		return "redirect:/";
+	}
+	//직권 회원 강제탈퇴
+    @RequestMapping(value="deleteMember.do", method = RequestMethod.GET)
+    public String deleteMember(@RequestParam("id") String id, MemberDTO member) throws Exception {
+    	member.setId(id);
+		memberService.deleteMember(member);
+		return "member/memberList";
+    }
+    
+	
+	//Service에서 세션 처리
+	@RequestMapping(value="login.do", method = RequestMethod.POST)
+	public String memberLogin(MemberDTO mdto, HttpServletRequest req, RedirectAttributes rttr) throws Exception {
+		boolean loginSuccess = memberService.login(req);
+		if(loginSuccess ) {		
+			return "home";
+		} else {
+			return "redirect:loginForm";
+		}
+	}
+		@RequestMapping(value="idCheck.do", method = RequestMethod.GET)
+		public String idCheck(@RequestParam String id, Model model, RedirectAttributes rttr) throws Exception {
+			int cnt = memberService.idCheck(id);
+			if(cnt==0) {
+				model.addAttribute("msg", "가입 가능한 아이디");
+				rttr.addFlashAttribute("message", "가입 가능한 아이디");
+				model.addAttribute("ck", "ok");
+				model.addAttribute("uid", id);
+			} else {
+				model.addAttribute("msg", "가입 불가능한 아이디");
+				rttr.addFlashAttribute("message", "가입 불가능한 아이디");
+				model.addAttribute("ck", null);
+			}
+			return "member/joinForm";
+		}
+		
+		@RequestMapping(value="signin.do", method = RequestMethod.POST)
+		public String memberSignin(MemberDTO mdto, RedirectAttributes rttr) throws Exception {
+			MemberDTO login = memberService.signin(mdto); 
+			System.out.println("컨트롤러 로그인 아이디 : "+mdto.getId());
+			System.out.println("컨트롤러 로그인 비밀번호 : "+mdto.getPwd());
+			login = memberService.signin(mdto);
+			boolean loginSuccess = false;
+			if(login!=null) {
+				loginSuccess = pwdEncoder.matches(mdto.getPwd(), login.getPwd());
+			}
+				if(login !=null && loginSuccess==true) {
+					session.setAttribute("mdto", login);
+					session.setAttribute("id", login.getId());
+					System.out.println("로그인성공"+login.getId());
+					rttr.addFlashAttribute("msg", "로그인 성공");
+					return "redirect:/";
+				} else {
+					session.setAttribute("mdto", null);
+	    			session.setAttribute("id", null);
+	    			rttr.addFlashAttribute("msg",false);
+	    			return "redirect:/member/loginForm.do";
+				}
+			}
+
+
+		
+		
+
+	@RequestMapping("logout.do")
+	public String memberLogout(HttpSession session) throws Exception {
+		session.invalidate();
+		return "redirect:/";
+	}
+}

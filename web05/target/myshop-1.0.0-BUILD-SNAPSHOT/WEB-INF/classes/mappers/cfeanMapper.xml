@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cfbean">
+<!-- 상품 목록 가져오기 -->
+<select id="cfbeanList" resultType="com.lmhshop.dto.CfbeanDTO">
+	select * from cfbean order by cno desc
+</select>
+
+<!-- 상품목록 보기 -->
+<select id="cfbeanRead" resultType="com.lmhshop.dto.CfbeanDTO">
+	select * from cfbean where cno =#{cno }
+</select>
+
+ <select id="cfbeanCount" resultType="integer">
+		select count(*) from cfbean
+</select>
+
+<!-- 상품추가 -->
+<insert id="addCfbean">
+	insert into cfbean (cno,ccode,ctitle,cprice,camount,cimg,ccontent,cweight,cdegree)values
+	 (#{cno},#{ccode },#{ctitle },#{cprice },#{camount },#{cimg },#{ccontent },#{cweight },#{cdegree })
+</insert>
+
+<!-- 상품변경 -->
+<update id="updateCfbean">
+	update cfbean set ctitle=#{ctitle},cprice=#{cprice},camount=#{camount},cimg=#{cimg},
+	ccontent=#{ccontent},cweight=#{cweight},cdegree=#{cdegree} where cno=#{cno }
+</update>
+
+<!-- 상풍삭제 -->
+<delete id="deleteCfbean">
+	delete from cfbean where cno=#{cno }
+</delete>
+	<select id="getCfbean" resultType="com.lmhshop.dto.CfbeanDTO">
+		select * from cfbean where cno=#{cno}
+	</select>
+</mapper>

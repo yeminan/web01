@@ -1,0 +1,20 @@
+@charset "UTF-8";
+ <style>
+/* 스타일 초기화 */
+#header {width:100%;}
+*{margin: 0; padding: 0;}
+body, html { width: 100%;font-family: 'Noto Sans KR', sans-serif; overflow-x:hidden;}
+ul{list-style: none;}
+a{text-decoration: none; }
+input, button{outline: 0; border: 0;}
+table, .table{display: table; border-collapse:collapse;}
+tr, .tr { display: table-row;}
+.wrap { clear:both; width: 100%; }
+
+.clrfx::after{content: 0;display: block; width: 100%; clear: both;}
+.content {clear: both; width: 100%;}
+/* 헤더부분 스타일 */
+/* logo */
+.logo {float: left; padding-top: 25px; margin-left:16em;}
+
+</style>

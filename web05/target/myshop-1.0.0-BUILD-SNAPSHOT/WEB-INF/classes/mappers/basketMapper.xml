@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="basket">
+<!-- 장바구니리스트 -->
+<select id="basketList" resultType="com.lmhshop.dto.BasketDTO">
+select * from basket where id =#{id }
+</select>
+
+<!-- 장바구니 상세보기 -->
+<select id="basketRead" resultType="com.lmhshop.dto.BasketDTO">
+	select * from basket where cno =#{cno } and id=#{id}
+</select>
+
+<!-- 장바구니 목록 추가 -->
+<insert id="insertBasket">
+	insert into basket (cno,ccode,id,ctitle,cprice,camount,cweight,cdegree,cimg)values
+	 (#{cno},#{ccode},#{id},#{ctitle},#{cprice},#{camount},#{cweight},#{cdegree},#{cimg })
+</insert>
+
+<!-- 장바구니 목록 변경  -->
+<update id="updateBasket">
+update basket set camount=#{camount}, where cno=#{cno}
+</update>
+
+<!-- 장바구니삭제 -->
+<delete id="deleteBasket">
+	delete from basket where ccno=#{ccno }
+</delete>
+</mapper>

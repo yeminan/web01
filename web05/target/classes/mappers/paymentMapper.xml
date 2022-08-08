@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="payment">
+
+<select id="paymentList" resultType="com.lmhshop.dto.PaymentDTO">
+	select * from payment order by cno desc
+</select>
+ 
+<select id="userPaymentList" resultType="com.lmhshop.dto.PaymentDTO">
+	select * from payment where userid =#{userid }
+</select>
+ 
+<select id="paymentRead" resultType="com.lmhshop.dto.PaymentDTO">
+	select * from payment where cno =#{cno }
+</select>
+ <select id="paymentCount" resultType="integer">
+		select count(*) from payment where userid=#{userid}
+</select>
+
+<insert id="insertPayment">
+ insert into payment (paytype,payno,money,amount,userid,rname,tel,addr1,addr2,postcode)values 
+ (#{paytype}, #{payno}, #{money}, #{amount},#{userid}, #{rname}, #{tel}, #{addr1}, #{addr2}, #{postcode})
+ </insert>
+ 
+<update id="paymentCfbeanUpdate">
+update cfbean set camount = camount - #{camount} where cno = #{cno}
+</update>
+
+<update id="returnCfbeanUpdate">
+update cfbean set camount = camount + #{camount} where cno= #{cno}
+</update>
+
+<delete id="paymentBasketUpdate">
+	delete from basket where cno = #{cno}
+</delete>
+<update id="updatePayment">
+	update sales set rname=#{rname}, tel=#{tel}, addr1=#{addr1},addr2=#{addr2},postcode=#{postcode},
+	where cno=#{cno} and userid=#{userid}
+</update>
+
+<delete id="deletePayment">
+	delete from payment where cno=#{cno} and userid=#{userid}
+</delete>
+</mapper>
