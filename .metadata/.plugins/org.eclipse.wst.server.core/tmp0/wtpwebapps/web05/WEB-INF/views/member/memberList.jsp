@@ -43,7 +43,7 @@ padding-right:2rem; padding-top:1rem; }
 							<c:forEach items="${memberList}" var="member" varStatus="status">
 							<tr>
 								<td><p>${status.count }</p></td>
-								<td><a href="${path1 }/member/getMember.do?id=${member.id}">
+								<td><a href="${path1 }/member/read.do?id=${member.id}">
 									<p class="cate_tit">${member.id }</p>
 								</a></td>	
 								<td><p class="cate_tit">${member.uname }</p></td>

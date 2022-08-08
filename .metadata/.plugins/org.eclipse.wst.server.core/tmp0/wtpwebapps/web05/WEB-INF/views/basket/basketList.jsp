@@ -24,7 +24,7 @@
 			<thead>
 				<tr>
 					
-					<th>상품번호</th>
+					<th>상품체크</th>
 					<th>상품명</th>
 					<th>가격</th>
 					<th>수량</th>
@@ -36,16 +36,18 @@
 			<tbody>	
 				<c:forEach items="${basket }" var="basket" varStatus="status">
 				<tr>
-				<td><input type="checkbox" name="cno" id="cno">${basket.cno }</td>
+				<td><input type="checkbox" name="cno" id="cno" value="${basket.cno }"></td>
 				<c:if test="${id == admin }">
-				<td><input type="text" name="ccode"id="ccode" value="${basket.ccode }"></td>
+				<td><input type="hidden" name="ccode"id="ccode" value="${basket.ccode }"></td>
 				</c:if>
-				<td><input type="text" name="ctitle"id="ctitle" value="${basket.ctitle }"></td>
-				<td><input type="text" name="cprice" id="cprice" value="${basket.cprice }"></td>
+				<td><input type="text" name="ctitle"id="ctitle" value="${basket.ctitle }" readonly></td>
+				<td><input type="text" name="cprice" id="cprice" value="${basket.cprice }"readonly></td>
+				
 				<td><input type="number" name="camount" id="camount"value="${basket.camount }"></td>
-				<td><input type="text" name="cweight" id="cweight" value="${basket.cweight }"><td>
-				<td><input type="text"name="cdegree" id="cdegree" value="${basket.cdegree }"></td>
-				<td><img src="../img/${basket.cimg }" alt="img"></td>
+					
+				<td><input type="text" name="cweight" id="cweight" value="${basket.cweight }"readonly><td>
+				<td><input type="text"name="cdegree" id="cdegree" value="${basket.cdegree }" readonly></td>
+				<td><img src="../img/${basket.cimg }"  name="cimg" id="cimg"  alt="img" ></td>
 				</tr>
 				</c:forEach>
 				
@@ -72,7 +74,6 @@
 			</tbody>
 		</table>
 		</form>
-	
-	
+
 </body>
 </html>

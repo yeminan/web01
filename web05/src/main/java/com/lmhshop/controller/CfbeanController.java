@@ -59,7 +59,7 @@ public class CfbeanController {
 	
 //	상품수정
 	@RequestMapping(value="updateCfbean.do",method = RequestMethod.POST)
-		public String updateCfbean(CfbeanDTO cfbean,Model model)throws Exception{
+		public String updateCfbean(CfbeanDTO cfbean)throws Exception{
 		cfbeanService.updateCfbean(cfbean);
 		return "redirect:/";
 	}
